@@ -1,46 +1,37 @@
-import tkinter as tk
-from tkinter import ttk
-from tkinter import messagebox
+import ttkbootstrap as ttk
+from ttkbootstrap.constants import *
+from classes.templates.lblFrameFuncion import lblFrameFuncion
+from classes.templates.lblFrameRestricciones import lblFrameRestricciones
+from classes.templates.lblFrameControles import lblFrameControles
 
 
-class App(tk.Tk):
+class App(ttk.Window):
     def __init__(self):
-        super().__init__()
+        super().__init__(themename="litera")
         # Establece las propiedades de la aplicación
         self.window_width = None
         self.window_height = None
-        # Variables logicas de la App
-        self.coeficientes = []
 
         # Variables de los widgets
-        self.lblCoeficientes = []
-
+        self.funObjetivo = None
+        self.funRestricciones = None
+        self.panelControles = None
 
         # Metodos de inicialización y configuración de la aplicación
         self.title('SIMPLEX APP')
-        self.set_window()
+        self.set_window(resizable=(True, True))
         self.create_widgets()
 
 
     def create_widgets(self):
-        self.frameFunObjetivo = tk.Frame(self, bg='navy')
-        self.lblFunObjetivo = tk.Label(self.frameFunObjetivo, text="Función Objetivo", font=('Console', 14), bg="navy", fg='white')
-        self.frameCoeficientes = tk.Frame(self.frameFunObjetivo, bg='gold')
+        # Estructura de la aplicación
+        self.funObjetivo = lblFrameFuncion(self, text="Función Objetivo")
+        self.funRestricciones = lblFrameRestricciones(self, text="Restricciones")
+        self.panelControles = lblFrameControles(self, text="Controles")
 
-        self.lblZ = tk.Label(self.frameCoeficientes, text="Z =", font=('Console', 14), bg="gold", fg='white')
-        self.coeficientes.append(tk.StringVar(value="1"))
-        self.coeficientes.append(tk.StringVar(value="1"))
-        for i, c in enumerate(self.coeficientes):
-            self.lblCoeficientes.append(tk.Label(self.frameCoeficientes, text=f"{c.get()}X{i+1}", font=('Console', 14), bg="gold", fg='white'))
-
-        self.frameFunObjetivo.pack(side=tk.TOP, fill=tk.X, padx=10, pady=10)
-        self.lblFunObjetivo.pack(side=tk.TOP)
-        self.frameCoeficientes.pack(side=tk.TOP, fill=tk.X, padx=10, pady=10)
-        self.lblZ.pack(side=tk.LEFT, padx=10)
-        for lc in self.lblCoeficientes:
-            lc.pack(side=tk.LEFT, padx=10)
-        
-        
+        # Funciones adicionales de interrelacion
+        self.funObjetivo.add_var.bind("<Button-1>", self.funRestricciones.add_variable, add="+")
+        self.funObjetivo.remove_var.bind("<Button-1>", self.funRestricciones.remove_variable, add="+")
 
 
     def set_window(self, width=None, height=None, resizable=(False, False)):
