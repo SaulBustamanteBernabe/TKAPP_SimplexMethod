@@ -1,5 +1,6 @@
 import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
+from ttkbootstrap.scrolled import ScrolledFrame
 from .frameRestriccion import frameRestriccion
 
 
@@ -12,7 +13,7 @@ class lblFrameRestricciones(ttk.LabelFrame):
         self.frameControles: ttk.Frame = None
         self.add_restic: ttk.Button = None
         self.remove_restric: ttk.Button = None
-        self.frameRestricciones: ttk.Frame = None
+        self.frameRestricciones: ScrolledFrame = None
         self.restricciones: list[frameRestriccion] = []
 
         self.create_widgets()
@@ -27,8 +28,8 @@ class lblFrameRestricciones(ttk.LabelFrame):
         self.remove_restric.pack(side=ttk.LEFT, padx=(10, 0))
 
         # Frame de restricciones
-        self.frameRestricciones = ttk.Frame(self)
-        self.frameRestricciones.pack(side=ttk.TOP, fill=ttk.X, padx=10, pady=(0, 15))
+        self.frameRestricciones = ScrolledFrame(self)
+        self.frameRestricciones.pack(side=ttk.TOP, fill=ttk.BOTH, expand=True, padx=10, pady=(0, 15))
         for i in range(2):
             self.restricciones.append(frameRestriccion(self.frameRestricciones))
 
