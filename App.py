@@ -1,13 +1,16 @@
 import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
+from ttkbootstrap.dialogs import Messagebox
 from classes.templates.lblFrameFuncion import lblFrameFuncion
 from classes.templates.lblFrameRestricciones import lblFrameRestricciones
 from classes.templates.lblFrameControles import lblFrameControles
+from classes.templates.topLevelResultado import topLevelResultado
+from classes.simplexmethod.SimplexMethod import SimplexMethod
 
 
 class App(ttk.Window):
     def __init__(self):
-        super().__init__(themename="litera")
+        super().__init__(themename="litera", iconphoto="./assets/images/Logo_SimplexMethod_32x32.png")
         # Establece las propiedades de la aplicación
         self.window_width = None
         self.window_height = None
@@ -32,6 +35,35 @@ class App(ttk.Window):
         # Funciones adicionales de interrelacion
         self.funObjetivo.add_var.bind("<Button-1>", self.funRestricciones.add_variable, add="+")
         self.funObjetivo.remove_var.bind("<Button-1>", self.funRestricciones.remove_variable, add="+")
+        self.panelControles.btnCalcular.bind("<Button-1>", self.calcular, add="+")
+    
+    def calcular(self, event):
+        # Obtiene los coeficientes de la función objetivo
+        coeficientes = self.funObjetivo.funcion.get_coeficientes()
+        # Obtiene las restricciones
+        restricciones = self.funRestricciones.get_restricciones()
+        # Obtiene los valores objetivo y metodo
+        objetivo = self.panelControles.optionObjetivo.get()
+        metodo = self.panelControles.optionMethod.get()
+        # Selecciona el metodo y resuelve
+        res = {}
+        if metodo == "Metodo Simplex":
+            simplex = SimplexMethod(objetivo, coeficientes, restricciones)
+            res = simplex.resolver()
+        elif metodo == "M grande":
+            print("M grande")
+        elif metodo == "Dos fases":
+            print("Dos fases")
+        # Mensaje de error y retorna
+        if "Error" in res.keys():
+            Messagebox.show_error(parent=self, title="Error", message=res["Error"])
+            return
+        # Mensaje de advertencias
+        if "Warning" in res.keys():
+            Messagebox.show_warning(parent=self, title="Advertencia", message=res["Warning"])
+        # Ventana de resultados
+        resultados = topLevelResultado(self, res, "Resultados")
+        
 
 
     def set_window(self, width=None, height=None, resizable=(False, False)):

@@ -25,5 +25,5 @@ class lblFrameControles(ttk.LabelFrame):
         self.optionObjetivo = ttk.Combobox(self, bootstyle=READONLY, state='readonly', values=self.objetivos, width=20)
         self.optionObjetivo.current(0)
         self.optionObjetivo.pack(side=ttk.LEFT, padx=10, pady=(10, 15))
-        self.btnCalcular = ttk.Button(self, text="Calcular", bootstyle=PRIMARY)
+        self.btnCalcular = ttk.Button(self, text="Resolver", bootstyle=PRIMARY)
         self.btnCalcular.pack(side=ttk.RIGHT, padx=10, pady=(10, 15))
