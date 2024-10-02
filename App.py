@@ -62,7 +62,7 @@ class App(ttk.Window):
         if "Warning" in res.keys():
             Messagebox.show_warning(parent=self, title="Advertencia", message=res["Warning"])
         # Ventana de resultados
-        resultados = topLevelResultado(self, res, "Resultados")
+        resultados = topLevelResultado(self, res["res"], "Resultados")
         
 
 

@@ -1,20 +1,36 @@
 import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
-from ttkbootstrap.scrolled import ScrolledText
+import pandas as pd
 
 class topLevelResultado(ttk.Toplevel):
     def __init__(self, parent, resultados, title="", **kwargs):
         super().__init__(parent, **kwargs)
+        # Inicializa la ventana
+        self.window_width = None
+        self.window_height = None
         self.title(title)
-        self.resultados = resultados
+        # Variables de los widgets
+        self.notebook_tablas: ttk.Notebook = None
+        self.tablas: list[ttk.Frame] = []
+        # Variables logicas
+        self.resultados: list[pd.DataFrame] = resultados
+
         self.set_window()
         self.create_widgets()
 
     def create_widgets(self):
-        text = ScrolledText(self)
-        text.pack(side=ttk.TOP, fill=ttk.BOTH, expand=True)
-        for t in self.resultados["res"]:
-            text.insert(END, f"{t}\n")
+        self.notebook_tablas = ttk.Notebook(self, bootstyle=SUCCESS)
+        self.notebook_tablas.pack(side=ttk.TOP, fill=ttk.BOTH, expand=True)
+        for i, tabla in enumerate(self.resultados):
+            columnas = ['Base'] + tabla.columns.tolist()
+            frame_tabla = ttk.Treeview(self.notebook_tablas, columns=columnas, show='headings', bootstyle=SUCCESS)
+            for c in columnas:
+                frame_tabla.heading(c, text=c)
+                frame_tabla.column(c, width=100, anchor=CENTER)
+            for j, r in tabla.iterrows():
+                frame_tabla.insert('', END, values=([j] + r.tolist()))
+            frame_tabla.pack(side=ttk.TOP, fill=ttk.BOTH, expand=True)
+            self.notebook_tablas.add(frame_tabla, text=f"Tabla {i+1}")
 
     def set_window(self, width=None, height=None):
         # Obtiene el tamaño de la pantalla

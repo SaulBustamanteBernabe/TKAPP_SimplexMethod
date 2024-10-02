@@ -139,7 +139,6 @@ class SimplexMethod:
         for i, fila in tabla.iterrows():
             if i != fila_pivote:
                 factor_reduccion = tabla.loc[i, columna_pivote] / nueva_tabla.loc[fila_pivote, columna_pivote]
-                print(factor_reduccion)
                 nueva_tabla.loc[i] = tabla.loc[i] - (nueva_tabla.loc[fila_pivote] * factor_reduccion)
         nueva_tabla = nueva_tabla.rename(index={fila_pivote: columna_pivote})
         return nueva_tabla
