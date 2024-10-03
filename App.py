@@ -10,10 +10,14 @@ from classes.simplexmethod.SimplexMethod import SimplexMethod
 
 class App(ttk.Window):
     def __init__(self):
-        super().__init__(themename="litera", iconphoto="./assets/images/Logo_SimplexMethod_32x32.png")
+        super().__init__(iconphoto="./assets/images/Logo_SimplexMethod_32x32.png")
         # Establece las propiedades de la aplicación
         self.window_width = None
         self.window_height = None
+        # Estilo de la app
+        self.styleApp = ttk.Style()
+        self.styleApp.theme_use("litera")
+        self.set_styles()
 
         # Variables de los widgets
         self.funObjetivo = None
@@ -87,6 +91,21 @@ class App(ttk.Window):
         # Establece la geometría de la ventana
         self.geometry(f'{self.window_width}x{self.window_height}+{center_x}+{center_y}')
         self.resizable(*resizable)
+
+    def set_styles(self):
+        # Configurar el estilo del Treeview
+        self.styleApp.configure("Treeview",
+            background="#E8E8E8",  # Fondo gris claro
+            foreground="#333333",  # Texto gris oscuro
+            rowheight=30,         # Altura de las filas
+            fieldbackground="#F0F0F0",  # Fondo de las celdas
+            font=("Helvetica", 12)  # Fuente y tamaño de letra
+        )
+        # Configurar el estilo de las cabeceras
+        self.styleApp.configure("Treeview.Heading",
+            font=("Helvetica", 14, "bold"),  # Fuente negrita para las cabeceras
+            background="#DCDCDC"  # Fondo gris claro para las cabeceras
+        )
 
 
 if __name__ == '__main__':

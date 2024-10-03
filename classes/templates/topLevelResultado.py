@@ -23,10 +23,10 @@ class topLevelResultado(ttk.Toplevel):
         self.notebook_tablas.pack(side=ttk.TOP, fill=ttk.BOTH, expand=True)
         for i, tabla in enumerate(self.resultados):
             columnas = ['Base'] + tabla.columns.tolist()
-            frame_tabla = ttk.Treeview(self.notebook_tablas, columns=columnas, show='headings', bootstyle=SUCCESS)
+            frame_tabla = ttk.Treeview(self.notebook_tablas, columns=columnas, show='headings', bootstyle=SUCCESS, style='Treeview')
             for c in columnas:
                 frame_tabla.heading(c, text=c)
-                frame_tabla.column(c, width=100, anchor=CENTER)
+                frame_tabla.column(c, anchor=CENTER, width=0)
             for j, r in tabla.iterrows():
                 frame_tabla.insert('', END, values=([j] + r.tolist()))
             frame_tabla.pack(side=ttk.TOP, fill=ttk.BOTH, expand=True)
