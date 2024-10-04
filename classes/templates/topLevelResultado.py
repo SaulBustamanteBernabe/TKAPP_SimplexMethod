@@ -1,9 +1,10 @@
 import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
 import pandas as pd
+import sympy as sp
 
 class topLevelResultado(ttk.Toplevel):
-    def __init__(self, parent, resultados, title="", **kwargs):
+    def __init__(self, parent, resultados, title="", option=None, **kwargs):
         super().__init__(parent, **kwargs)
         # Inicializa la ventana
         self.window_width = None
@@ -14,7 +15,7 @@ class topLevelResultado(ttk.Toplevel):
         self.tablas: list[ttk.Frame] = []
         # Variables logicas
         self.resultados: list[pd.DataFrame] = resultados
-
+        self.option = option
         self.set_window()
         self.create_widgets()
 
@@ -28,7 +29,10 @@ class topLevelResultado(ttk.Toplevel):
                 frame_tabla.heading(c, text=c)
                 frame_tabla.column(c, anchor=CENTER, width=0)
             for j, r in tabla.iterrows():
-                frame_tabla.insert('', END, values=([j] + r.tolist()))
+                contenido = r.to_list()
+                if self.option == "M":
+                    contenido = [c.evalf(5) if isinstance(c, sp.Expr) else c for c in contenido]
+                frame_tabla.insert('', END, values=([j] + contenido))
             frame_tabla.pack(side=ttk.TOP, fill=ttk.BOTH, expand=True)
             self.notebook_tablas.add(frame_tabla, text=f"Tabla {i+1}")
 

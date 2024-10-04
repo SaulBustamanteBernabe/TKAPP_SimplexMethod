@@ -6,6 +6,7 @@ from classes.templates.lblFrameRestricciones import lblFrameRestricciones
 from classes.templates.lblFrameControles import lblFrameControles
 from classes.templates.topLevelResultado import topLevelResultado
 from classes.simplexmethod.SimplexMethod import SimplexMethod
+from classes.simplexmethod.BigMethod import BigMethod
 
 
 class App(ttk.Window):
@@ -54,8 +55,10 @@ class App(ttk.Window):
         if metodo == "Metodo Simplex":
             simplex = SimplexMethod(objetivo, coeficientes, restricciones)
             res = simplex.resolver()
+            res["option"] = None
         elif metodo == "M grande":
-            print("M grande")
+            bigM = BigMethod(objetivo, coeficientes, restricciones)
+            res = bigM.resolver()
         elif metodo == "Dos fases":
             print("Dos fases")
         # Mensaje de error y retorna
@@ -66,7 +69,7 @@ class App(ttk.Window):
         if "Warning" in res.keys():
             Messagebox.show_warning(parent=self, title="Advertencia", message=res["Warning"])
         # Ventana de resultados
-        resultados = topLevelResultado(self, res["res"], "Resultados")
+        resultados = topLevelResultado(self, res["res"], title="Resultados", option=res["option"])
         
 
 

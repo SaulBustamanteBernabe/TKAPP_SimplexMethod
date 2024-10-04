@@ -1,53 +1,36 @@
-import tkinter as tk
-from tkinter import ttk
-from tkinter.messagebox import showinfo
+import pandas as pd
+import numpy as np
+import sympy as sp
 
 
-class App(tk.Tk):
-    def __init__(self):
-        super().__init__()
+M = sp.symbols("M")
+VM = 100000000
 
-        self.title('Treeview demo')
-        self.geometry('620x200')
+a = -5 * M - 8
+b = -5 * M - 3
+c = -5 * M - 1
+d = -5 * M
+e = -5 * M + 1
+f = -5 * M + 3
 
-        self.tree = self.create_tree_widget()
+tabla = pd.Series([a, b, c, d, e, f], index=["a", "b", "c", "d", "e", "f"])
+# print([i.subs(M, VM) >= 0 for i in tabla])
 
-    def create_tree_widget(self):
-        columns = ('first_name', 'last_name', 'email')
-        tree = ttk.Treeview(self, columns=columns, show='headings')
+arreglo = np.array([12, 7, 6, 11, np.nan, 9, 1])
+print(f"Arreglo original: {arreglo}")
 
-        # define headings
-        tree.heading('first_name', text='First Name')
-        tree.heading('last_name', text='Last Name')
-        tree.heading('email', text='Email')
+# Crear una máscara para filtrar los elementos NaN y infinitos
+mascara = ~np.isnan(arreglo) & ~np.isinf(arreglo)
+print(f"Máscara: {mascara}")
+# Aplicar la máscara al arreglo
+arreglo_filtrado = arreglo[mascara]
+print(f"Arreglo filtrado: {arreglo_filtrado}")
 
-        tree.bind('<<TreeviewSelect>>', self.item_selected)
-        tree.grid(row=0, column=0, sticky=tk.NSEW)
+# Obtener el índice del elemento menor en el arreglo filtrado
+indice_menor_filtrado = np.argmin(arreglo_filtrado)
 
-        # add a scrollbar
-        scrollbar = ttk.Scrollbar(self, orient=tk.VERTICAL, command=tree.yview)
-        tree.configure(yscroll=scrollbar.set)
-        scrollbar.grid(row=0, column=1, sticky='ns')
+# Obtener el índice correspondiente en el arreglo original
+print(np.where(mascara))
+indice_menor = np.where(mascara)[0][indice_menor_filtrado]
 
-        # generate sample data
-        contacts = []
-        for n in range(1, 100):
-            contacts.append((f'first {n}', f'last {n}', f'email{n}@example.com'))
-
-        # add data to the treeview
-        for contact in contacts:
-            tree.insert('', tk.END, values=contact)
-
-        return tree
-
-    def item_selected(self, event):
-        for selected_item in self.tree.selection():
-            item = self.tree.item(selected_item)
-            record = item['values']
-            # show a message
-            showinfo(title='Information', message=','.join(record))
-
-
-if __name__ == '__main__':
-    app = App()
-    app.mainloop()
+print(f"Índice del elemento menor (ignorando NaN e inf): {indice_menor}")
