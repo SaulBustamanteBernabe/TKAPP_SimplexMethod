@@ -57,9 +57,7 @@ class BigMethod:
         # Contruir tabla pandas inicial
         columnas = [f"x{i+1}" for i in range(len(self.coeficientes))] + ["R"]
         tabla = pd.DataFrame(self.numpy_restricciones, columns=columnas)
-        tabla.loc[len(tabla)] = np.array(self.coeficientes + [0]) * (-1 if self.objetivo == self.MAXIMIZAR else 1)
-        if self.objetivo == self.MINIMIZAR:
-            self.objetivo = self.MAXIMIZAR
+        tabla.loc[len(tabla)] = np.array(self.coeficientes + [0]) * -1
         tabla.rename(index={len(tabla)-1: f"Z"}, inplace=True)
         # Agregar varibles de holgura a la tabla para los tipo "<=", variables artificiales para los tipo "=" y de exceso y artificial para los tipo ">="
         exceso = 0
@@ -86,7 +84,10 @@ class BigMethod:
         # Restar variables artificiales con M de la funcion objetivo
         npTabla = tabla.to_numpy()
         for rm in restriccionesM:
-            npTabla[-1] -= npTabla[rm] * self.M
+            if self.objetivo == self.MAXIMIZAR:
+                npTabla[-1] -= npTabla[rm] * self.M
+            else:
+                npTabla[-1] += npTabla[rm] * self.M
         for i in range(len(npTabla)):
             npTabla[i] = sp.sympify(npTabla[i])
         # Nueva tabla inicial
