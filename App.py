@@ -7,6 +7,7 @@ from classes.templates.lblFrameControles import lblFrameControles
 from classes.templates.topLevelResultado import topLevelResultado
 from classes.simplexmethod.SimplexMethod import SimplexMethod
 from classes.simplexmethod.BigMethod import BigMethod
+from classes.simplexmethod.TwoPhasesMethod import TwoPhasesMethod
 
 
 class App(ttk.Window):
@@ -51,6 +52,9 @@ class App(ttk.Window):
         objetivo = self.panelControles.optionObjetivo.get()
         metodo = self.panelControles.optionMethod.get()
         # Selecciona el metodo y resuelve
+        # objetivo, coeficientes, restricciones = "Minimizar", [0.4, 0.5], [([0.3, 0.1], '<=', 2.7), ([0.5, 0.5], '=', 6.0), ([0.6, 0.4], '>=', 6.0)]
+        # objetivo, coeficientes, restricciones = "Minimizar", [2.0, 1.0, 3.0], [([5.0, 2.0, 7.0], '=', 420.0), ([3.0, 2.0, 5.0], '>=', 280.0), ([1.0, 0.0, 1.0], '<=', 100.0)]
+        # objetivo, coeficientes, restricciones = "Maximizar", [5.0, 8.0], [([2.0, 1.0], '=', 12.0), ([1.0, 1.0], '>=', 8.0), ([0.0, 1.0], '<=', 8.0)]
         res = {}
         if metodo == "Metodo Simplex":
             simplex = SimplexMethod(objetivo, coeficientes, restricciones)
@@ -60,18 +64,40 @@ class App(ttk.Window):
             bigM = BigMethod(objetivo, coeficientes, restricciones)
             res = bigM.resolver()
         elif metodo == "Dos fases":
-            print("Dos fases")
-        # Mensaje de error y retorna
-        if "Error" in res.keys():
-            Messagebox.show_error(parent=self, title="Error", message=res["Error"])
+            twoPhases = TwoPhasesMethod(objetivo, coeficientes, restricciones)
+            res = twoPhases.resolver()
+            # Mensaje de error y retorna de la Fase 1
+            if self.message_error(res["res_1"]): return
+            # Mensaje de advertencias de la Fase 1
+            self.message_warning(res["res_1"], title="Advertencia Fase 1")
+            # Ventanas de resultados de la Fase 1
+            resultados = topLevelResultado(self, res["res_1"]["res"], title="Resultados Fase 1")
+            # Mensaje de error y retorna de la Fase 2
+            if self.message_error(res["res_2"]): return
+            # Mensaje de advertencias de la Fase 2
+            self.message_warning(res["res_2"], title="Advertencia Fase 2")
+            # Ventanas de resultados de la Fase 2 en caso de ser resuelto
+            if res["res_2"]["resolved"]:
+                resultados2 = topLevelResultado(self, res["res_2"]["res"], title="Resultados Fase 2")
             return
+        # Mensaje de error y retorna
+        if self.message_error(res): return
         # Mensaje de advertencias
-        if "Warning" in res.keys():
-            Messagebox.show_warning(parent=self, title="Advertencia", message=res["Warning"])
+        self.message_warning(res)
         # Ventana de resultados
         resultados = topLevelResultado(self, res["res"], title="Resultados", option=res["option"])
         
-
+    def message_error(self, message: dict, title="Error"):
+        if "Error" in message.keys():
+            Messagebox.show_error(parent=self, title=title, message=message["Error"])
+            return True
+        return False
+    
+    def message_warning(self, message: dict, title="Advertencia"):
+        if "Warning" in message.keys():
+            Messagebox.show_warning(parent=self, title=title, message=message["Warning"])
+            return True
+        return False
 
     def set_window(self, width=None, height=None, resizable=(False, False)):
         # Obtiene el tamaño de la pantalla
@@ -102,7 +128,7 @@ class App(ttk.Window):
             foreground="#333333",  # Texto gris oscuro
             rowheight=30,         # Altura de las filas
             fieldbackground="#F0F0F0",  # Fondo de las celdas
-            font=("Helvetica", 12)  # Fuente y tamaño de letra
+            font=("Helvetica", 10)  # Fuente y tamaño de letra
         )
         # Configurar el estilo de las cabeceras
         self.styleApp.configure("Treeview.Heading",

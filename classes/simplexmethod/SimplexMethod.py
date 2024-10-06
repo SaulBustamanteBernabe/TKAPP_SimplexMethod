@@ -100,8 +100,6 @@ class SimplexMethod:
             nueva_tabla = self.crear_nueva_tabla(tabla_anterior, fila_pivote, columna_pivote)
             # Agregar nueva tabla a la lista
             self.tablas.append(nueva_tabla)
-        
-
 
     def condicion_optimalidad(self, tabla: pd.DataFrame):
         # Se determina si la tabla ha llegado a la condición de optimalidad
@@ -141,4 +139,4 @@ class SimplexMethod:
                 factor_reduccion = tabla.loc[i, columna_pivote] / nueva_tabla.loc[fila_pivote, columna_pivote]
                 nueva_tabla.loc[i] = tabla.loc[i] - (nueva_tabla.loc[fila_pivote] * factor_reduccion)
         nueva_tabla = nueva_tabla.rename(index={fila_pivote: columna_pivote})
-        return nueva_tabla
+        return nueva_tabla.round(9)
