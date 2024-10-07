@@ -125,7 +125,7 @@ class App(ttk.Window):
         # Configurar el estilo del Treeview
         self.styleApp.configure("Treeview",
             background="#E8E8E8",  # Fondo gris claro
-            foreground="#333333",  # Texto gris oscuro
+            foreground="#111111",  # Texto gris oscuro
             rowheight=30,         # Altura de las filas
             fieldbackground="#F0F0F0",  # Fondo de las celdas
             font=("Consolas", 12)  # Fuente y tamaño de letra

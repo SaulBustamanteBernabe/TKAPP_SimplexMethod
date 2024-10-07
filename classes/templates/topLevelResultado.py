@@ -38,6 +38,21 @@ class topLevelResultado(ttk.Toplevel):
                 frame_tabla.insert('', END, values=([j] + contenido))
             frame_tabla.pack(side=ttk.TOP, fill=ttk.BOTH, expand=True)
             self.notebook_tablas.add(frame_tabla, text=f"Tabla {i+1}")
+        # Ultima pestaña, frame de resultado, Solución Optima
+        frame_resultados = ttk.Frame(self.notebook_tablas)
+        frame_resultados.pack(side=ttk.TOP, fill=ttk.BOTH, expand=True)
+        self.notebook_tablas.add(frame_resultados, text="Resultado")
+
+        label_solucion = ttk.Label(frame_resultados, text="Solución Optima", font=('Console', 16, 'bold'))
+        label_solucion.pack(side=ttk.TOP, pady=20)
+
+        label_res = ttk.Label(frame_resultados, font=('Console', 14))
+        var_res = self.resultados[-1].index[-1]
+        if self.option == "M":
+            label_res.config(text=f"{var_res} = {self.resultados[-1].iloc[-1, -1].subs("M", 0).evalf(3)}")
+        else:
+            label_res.config(text=f"{var_res} = {self.resultados[-1].iloc[-1, -1].round(3)}")
+        label_res.pack(side=ttk.TOP, pady=30)
 
     def set_window(self, width=None, height=None):
         # Obtiene el tamaño de la pantalla
