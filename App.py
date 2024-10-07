@@ -128,7 +128,7 @@ class App(ttk.Window):
             foreground="#333333",  # Texto gris oscuro
             rowheight=30,         # Altura de las filas
             fieldbackground="#F0F0F0",  # Fondo de las celdas
-            font=("Helvetica", 10)  # Fuente y tamaño de letra
+            font=("Consolas", 12)  # Fuente y tamaño de letra
         )
         # Configurar el estilo de las cabeceras
         self.styleApp.configure("Treeview.Heading",
